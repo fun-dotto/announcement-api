@@ -20,7 +20,7 @@ COPY . .
 RUN make generate
 
 # Build the application
-RUN make build
+RUN CGO_ENABLED=0 GOOS=linux go build -tags timetzdata -o ./bin/main ./cmd/server/main.go
 
 # Runtime stage
 FROM alpine:latest

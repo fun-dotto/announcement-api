@@ -16,11 +16,11 @@ clean:
 build:
 	$(MAKE) clean
 	mkdir -p ./bin
-	go build -tags timetzdata -o ./bin/main ./main.go
+	go build -tags timetzdata -o ./bin/main ./cmd/server/main.go
 
 .PHONY: run
 run:
-	go run ./main.go
+	go run ./cmd/server/main.go
 
 .PHONY: build-and-run
 build-and-run:
