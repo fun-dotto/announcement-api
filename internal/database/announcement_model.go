@@ -1,9 +1,10 @@
-package repository
+package database
 
 import (
 	"time"
 
 	"github.com/fun-dotto/announcement-api/internal/domain"
+	"gorm.io/gorm"
 )
 
 type AnnouncementModel struct {
@@ -38,4 +39,10 @@ func FromDomain(announcement domain.Announcement) AnnouncementModel {
 		URL:      announcement.URL,
 		IsActive: announcement.IsActive,
 	}
+}
+
+func AutoMigrate(db *gorm.DB) error {
+	return db.AutoMigrate(
+		&AnnouncementModel{},
+	)
 }
