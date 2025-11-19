@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/fun-dotto/announcement-api/internal/database"
 	"github.com/fun-dotto/announcement-api/internal/domain"
 	"gorm.io/gorm"
 )
@@ -14,9 +15,15 @@ func NewAnnouncementRepository(db *gorm.DB) *announcementRepository {
 }
 
 func (r *announcementRepository) GetAnnouncements() ([]domain.Announcement, error) {
-	var announcements []domain.Announcement
-	if err := r.db.Find(&announcements).Error; err != nil {
+	var dbAnnouncements []database.Announcement
+	if err := r.db.Find(&dbAnnouncements).Error; err != nil {
 		return nil, err
 	}
-	return announcements, nil
+
+	domainAnnouncements := make([]domain.Announcement, len(dbAnnouncements))
+	for i, dbAnnouncement := range dbAnnouncements {
+		domainAnnouncements[i] = dbAnnouncement.ToDomain()
+	}
+
+	return domainAnnouncements, nil
 }
