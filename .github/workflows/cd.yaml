@@ -29,20 +29,20 @@ jobs:
         run: |
           # Environment
           if [ ${{ github.event_name == 'workflow_dispatch' }} ]; then
-            export ENVIRONMENT=${{ github.event.inputs.environment_name }}
+            export TARGET_ENVIRONMENT="${{ github.event.inputs.environment_name }}"
           elif [ ${{ github.event_name == 'push' }} && ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }} ]; then
-            export ENVIRONMENT=stg
+            export TARGET_ENVIRONMENT="stg"
           else
             exit 1
           fi
 
-          echo "Environment: $ENVIRONMENT"
+          echo "Environment: $TARGET_ENVIRONMENT"
 
           # Service name suffix
-          if [ $ENVIRONMENT == 'prod' ]; then
+          if [ $TARGET_ENVIRONMENT == 'prod' ]; then
             export SERVICE_NAME_SUFFIX=""
           else
-            export SERVICE_NAME_SUFFIX="-$ENVIRONMENT"
+            export SERVICE_NAME_SUFFIX="-$TARGET_ENVIRONMENT"
           fi
 
           export REPO_NAME=$(echo ${{ github.repository }} | awk -F '/' '{print $2}')
@@ -53,7 +53,7 @@ jobs:
           echo "Service name: $SERVICE_NAME"
           echo "Image tag: $IMAGE_TAG"
 
-          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "environment=$TARGET_ENVIRONMENT" >> "$GITHUB_OUTPUT"
           echo "service_name=$SERVICE_NAME" >> "$GITHUB_OUTPUT"
           echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
   build-and-push:
