@@ -19,13 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.set-env.outputs.environment }}
-      service_name_suffix: ${{ steps.set-env.outputs.service_name_suffix }}
+      service_name: ${{ steps.set-env.outputs.service_name }}
+      image_tag: ${{ steps.set-env.outputs.image_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set Environmet
         id: set-env
         run: |
+          # Environment
           if [ ${{ github.event_name == 'workflow_dispatch' }} ]; then
             export ENVIRONMENT=${{ github.event.inputs.environment_name }}
           elif [ ${{ github.event_name == 'push' }} && ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }} ]; then
@@ -33,30 +35,19 @@ jobs:
           else
             exit 1
           fi
+
+          # Service name suffix
           if [ $ENVIRONMENT != 'prod' ]; then
             export SERVICE_NAME_SUFFIX="-$ENVIRONMENT"
           else
             export SERVICE_NAME_SUFFIX=""
           fi
-          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
-          echo "service_name_suffix=$SERVICE_NAME_SUFFIX" >> "$GITHUB_OUTPUT"
-  set-gcp-name:
-    runs-on: ubuntu-latest
-    environment: ${{ needs.set-env.outputs.environment }}
-    needs:
-      - set-env
-    outputs:
-      service_name: ${{ steps.set-gcp-name.outputs.service_name }}
-      image_tag: ${{ steps.set-gcp-name.outputs.image_tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set GCP Name
-        id: set-gcp-name
-        run: |
+
           export REPO_NAME=$(echo ${{ github.repository }} | awk -F '/' '{print $2}')
-          export SERVICE_NAME=$REPO_NAME${{ needs.set-env.outputs.service_name_suffix }}
+          export SERVICE_NAME=$REPO_NAME$SERVICE_NAME_SUFFIX
           export IMAGE_TAG=${{ vars._AR_HOSTNAME }}/${{ vars.PROJECT_ID }}/github-actions/$REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+
+          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
           echo "service_name=$SERVICE_NAME" >> "$GITHUB_OUTPUT"
           echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
   build-and-push:
@@ -66,11 +57,10 @@ jobs:
       id-token: write
     environment: ${{ needs.set-env.outputs.environment }}
     env:
-      SERVICE_NAME: ${{ needs.set-gcp-name.outputs.service_name }}
-      IMAGE_TAG: ${{ needs.set-gcp-name.outputs.image_tag }}
+      SERVICE_NAME: ${{ needs.set-env.outputs.service_name }}
+      IMAGE_TAG: ${{ needs.set-env.outputs.image_tag }}
     needs:
       - set-env
-      - set-gcp-name
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,11 +96,10 @@ jobs:
       id-token: write
     environment: ${{ needs.set-env.outputs.environment }}
     env:
-      SERVICE_NAME: ${{ needs.set-gcp-name.outputs.service_name }}
-      IMAGE_TAG: ${{ needs.set-gcp-name.outputs.image_tag }}
+      SERVICE_NAME: ${{ needs.set-env.outputs.service_name }}
+      IMAGE_TAG: ${{ needs.set-env.outputs.image_tag }}
     needs:
       - set-env
-      - set-gcp-name
       - build-and-push
     steps:
       - name: Authenticate
