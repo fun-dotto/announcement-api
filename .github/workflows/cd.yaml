@@ -36,16 +36,22 @@ jobs:
             exit 1
           fi
 
+          echo "Environment: $ENVIRONMENT"
+
           # Service name suffix
-          if [ $ENVIRONMENT != 'prod' ]; then
-            export SERVICE_NAME_SUFFIX="-$ENVIRONMENT"
-          else
+          if [ $ENVIRONMENT == 'prod' ]; then
             export SERVICE_NAME_SUFFIX=""
+          else
+            export SERVICE_NAME_SUFFIX="-$ENVIRONMENT"
           fi
 
           export REPO_NAME=$(echo ${{ github.repository }} | awk -F '/' '{print $2}')
           export SERVICE_NAME=$REPO_NAME$SERVICE_NAME_SUFFIX
           export IMAGE_TAG=${{ vars._AR_HOSTNAME }}/${{ vars.PROJECT_ID }}/github-actions/$REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+
+          echo "Repository name: $REPO_NAME"
+          echo "Service name: $SERVICE_NAME"
+          echo "Image tag: $IMAGE_TAG"
 
           echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
           echo "service_name=$SERVICE_NAME" >> "$GITHUB_OUTPUT"
@@ -55,7 +61,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    environment: ${{ needs.set-env.outputs.environment }}
     env:
       SERVICE_NAME: ${{ needs.set-env.outputs.service_name }}
       IMAGE_TAG: ${{ needs.set-env.outputs.image_tag }}
