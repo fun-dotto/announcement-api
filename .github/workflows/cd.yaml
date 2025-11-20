@@ -28,9 +28,11 @@ jobs:
         id: set-env
         run: |
           # Environment
-          if [ ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment_name != '' }} ]; then
+          IS_WORKFLOW_DISPATCH="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment_name != '' }}"
+          IS_PUSH_TO_MAIN="${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}"
+          if [ $IS_WORKFLOW_DISPATCH = "true" ]; then
             export TARGET_ENVIRONMENT="${{ github.event.inputs.environment_name }}"
-          elif [ ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }} ]; then
+          elif [ $IS_PUSH_TO_MAIN = "true" ]; then
             export TARGET_ENVIRONMENT="stg"
           else
             exit 1
@@ -39,7 +41,7 @@ jobs:
           echo "Environment: $TARGET_ENVIRONMENT"
 
           # Service name suffix
-          if [ "$TARGET_ENVIRONMENT" == "prod" ]; then
+          if [ "$TARGET_ENVIRONMENT" = "prod" ]; then
             export SERVICE_NAME_SUFFIX=""
           else
             export SERVICE_NAME_SUFFIX="-$TARGET_ENVIRONMENT"
