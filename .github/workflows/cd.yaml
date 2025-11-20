@@ -1,0 +1,127 @@
+name: CD
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - stg
+          - qa
+          - prod
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Environmet
+        id: set-env
+        run: |
+          if [ ${{ github.event_name == 'workflow_dispatch' }} ]; then
+            export ENVIRONMENT=${{ github.event.inputs.environment_name }}
+          elif [ ${{ github.event_name == 'push' }} && ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }} ]; then
+            export ENVIRONMENT=stg
+          else
+            exit 1
+          fi
+          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+  set-gcp-name:
+    runs-on: ubuntu-latest
+    outputs:
+      service_name: ${{ steps.set-gcp-name.outputs.service_name }}
+      image_tag: ${{ steps.set-gcp-name.outputs.image_tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set GCP Name
+        id: set-gcp-name
+        run: |
+          export REPO_NAME=$(echo ${{ github.repository }} | awk -F '/' '{print $2}')
+          export SERVICE_NAME=$REPO_NAME${{ vars.SERVICE_NAME_SUFFIX }}
+          export IMAGE_TAG=${{ vars._AR_HOSTNAME }}/${{ vars.PROJECT_ID }}/github-actions/$REPO_NAME/$SERVICE_NAME:${{ github.sha }}
+          echo "service_name=$SERVICE_NAME" >> "$GITHUB_OUTPUT"
+          echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: ${{ needs.set-env.outputs.environment }}
+    env:
+      SERVICE_NAME: ${{ needs.set-gcp-name.outputs.service_name }}
+      IMAGE_TAG: ${{ needs.set-gcp-name.outputs.image_tag }}
+    needs:
+      - set-env
+      - set-gcp-name
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: |
+          docker build \
+          -t ${{ env.IMAGE_TAG }} \
+          . \
+          -f Dockerfile \
+          --no-cache
+      - name: Authenticate
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.SERVICE_ACCOUNT }}
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.PROJECT_ID }}
+      - name: Configure Docker
+        run: |
+          gcloud auth \
+          configure-docker \
+          ${{ vars._AR_HOSTNAME }}
+      - name: Push
+        run: |
+          docker push \
+          ${{ env.IMAGE_TAG }}
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment: ${{ needs.set-env.outputs.environment }}
+    env:
+      SERVICE_NAME: ${{ needs.set-gcp-name.outputs.service_name }}
+      IMAGE_TAG: ${{ needs.set-gcp-name.outputs.image_tag }}
+    needs:
+      - set-env
+      - set-gcp-name
+      - build-and-push
+    steps:
+      - name: Authenticate
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.SERVICE_ACCOUNT }}
+      - name: Deploy
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          image: ${{ env.IMAGE_TAG }}
+          region: ${{ vars._DEPLOY_REGION }}
+          env_vars: |
+            DB_HOST=${{ vars.DB_HOST }}
+            DB_PORT=${{ vars.DB_PORT }}
+            DB_NAME=${{ vars.DB_NAME }}
+            DB_USER=${{ vars.DB_USER }}
+            DB_PASSWORD=${{ vars.DB_PASSWORD }}
+            DB_SSLMODE=${{ vars.DB_SSLMODE }}
+          env_vars_update_strategy: overwrite
+          secrets_update_strategy: overwrite
