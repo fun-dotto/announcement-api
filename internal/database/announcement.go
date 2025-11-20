@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/fun-dotto/announcement-api/internal/domain"
-	"gorm.io/gorm"
 )
 
 type Announcement struct {
@@ -39,10 +38,4 @@ func FromDomain(announcement domain.Announcement) Announcement {
 		URL:      announcement.URL,
 		IsActive: announcement.IsActive,
 	}
-}
-
-func AutoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate(
-		&Announcement{},
-	)
 }
