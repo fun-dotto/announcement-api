@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.24.2-alpine AS builder
+FROM golang:1.25.4-alpine AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git
@@ -26,7 +26,7 @@ RUN task generate
 RUN CGO_ENABLED=0 GOOS=linux go build -tags timetzdata -o ./bin/main ./cmd/server/main.go
 
 # Runtime stage
-FROM alpine:latest
+FROM alpine:3.22.2
 
 # Install runtime dependencies
 RUN apk add --no-cache ca-certificates
