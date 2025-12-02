@@ -41,6 +41,9 @@ WORKDIR /app
 # Copy binary from builder
 COPY --from=builder /app/bin/main /app/main
 
+# Copy OpenAPI spec
+COPY --from=builder /app/openapi /app/openapi
+
 # Change ownership
 RUN chown -R appuser:appuser /app
 
