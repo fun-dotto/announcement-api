@@ -71,11 +71,11 @@ components:
         - asc
         - desc
 servers:
-  - url: https://announcement-api-dev-107577467292.asia-northeast1.run.app
-    description: Development
-    variables: {}
   - url: http://localhost:8080
     description: Local
+    variables: {}
+  - url: https://announcement-api-dev-107577467292.asia-northeast1.run.app
+    description: Development
     variables: {}
   - url: https://announcement-api-stg-107577467292.asia-northeast1.run.app
     description: Staging
