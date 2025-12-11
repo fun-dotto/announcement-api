@@ -105,13 +105,3 @@ func TestAnnouncementsList(t *testing.T) {
 		})
 	}
 }
-
-// boolPtr は bool値のポインタを返すヘルパー関数
-func boolPtr(b bool) *bool {
-	return &b
-}
-
-// sortDirPtr は SortDirection値のポインタを返すヘルパー関数
-func sortDirPtr(s api.SortDirection) *api.SortDirection {
-	return &s
-}
