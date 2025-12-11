@@ -22,14 +22,6 @@ type ServerConfig struct {
 
 func Load() *Config {
 	return &Config{
-		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnv("DB_PORT", "5432"),
-			User:     getEnv("DB_USER", "postgres"),
-			Password: getEnv("DB_PASSWORD", "postgres"),
-			DBName:   getEnv("DB_NAME", "postgres"),
-			SSLMode:  getEnv("DB_SSLMODE", "disable"),
-		},
 		Server: ServerConfig{
 			Port: getEnv("SERVER_PORT", "8080"),
 		},
