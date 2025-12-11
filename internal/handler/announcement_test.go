@@ -98,6 +98,12 @@ func TestAnnouncementsList(t *testing.T) {
 				FilterIsActive: boolPtr(true),
 			},
 			wantCode: http.StatusOK,
+			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
+				var announcements []api.Announcement
+				err := json.Unmarshal(w.Body.Bytes(), &announcements)
+				assert.NoError(t, err)
+				assert.Empty(t, announcements)
+			},
 		},
 		{
 			name: "SortByDate=ascがクエリに正しく渡される",
@@ -112,6 +118,12 @@ func TestAnnouncementsList(t *testing.T) {
 				SortByDate: sortDirPtr(api.Asc),
 			},
 			wantCode: http.StatusOK,
+			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
+				var announcements []api.Announcement
+				err := json.Unmarshal(w.Body.Bytes(), &announcements)
+				assert.NoError(t, err)
+				assert.Empty(t, announcements)
+			},
 		},
 		{
 			name: "SortByDate=descがクエリに正しく渡される",
@@ -126,6 +138,12 @@ func TestAnnouncementsList(t *testing.T) {
 				SortByDate: sortDirPtr(api.Desc),
 			},
 			wantCode: http.StatusOK,
+			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
+				var announcements []api.Announcement
+				err := json.Unmarshal(w.Body.Bytes(), &announcements)
+				assert.NoError(t, err)
+				assert.Empty(t, announcements)
+			},
 		},
 	}
 
