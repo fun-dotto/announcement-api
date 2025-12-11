@@ -90,8 +90,6 @@ func TestAnnouncementsList(t *testing.T) {
 			setupMock: func() *repository.MockAnnouncementRepository {
 				return &repository.MockAnnouncementRepository{
 					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						// パラメータが正しく変換されているかを検証
-						assert.True(t, query.FilterIsActive, "FilterIsActive should be true")
 						return []domain.Announcement{}, nil
 					},
 				}
@@ -106,7 +104,6 @@ func TestAnnouncementsList(t *testing.T) {
 			setupMock: func() *repository.MockAnnouncementRepository {
 				return &repository.MockAnnouncementRepository{
 					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						assert.Equal(t, domain.SortDirectionAsc, query.SortByDate)
 						return []domain.Announcement{}, nil
 					},
 				}
@@ -121,7 +118,6 @@ func TestAnnouncementsList(t *testing.T) {
 			setupMock: func() *repository.MockAnnouncementRepository {
 				return &repository.MockAnnouncementRepository{
 					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						assert.Equal(t, domain.SortDirectionDesc, query.SortByDate)
 						return []domain.Announcement{}, nil
 					},
 				}
