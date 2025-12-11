@@ -82,7 +82,7 @@ func TestAnnouncementsList(t *testing.T) {
 			params:   api.AnnouncementsListParams{},
 			wantCode: http.StatusInternalServerError,
 			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
-				assert.Contains(t, w.Body.String(), "error")
+				assert.Contains(t, w.Body.String(), "database connection failed")
 			},
 		},
 	}
