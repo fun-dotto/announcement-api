@@ -100,10 +100,6 @@ func TestAnnouncementsList(t *testing.T) {
 				FilterIsActive: boolPtr(true),
 			},
 			wantCode: http.StatusOK,
-			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
-				// ステータスコードだけ確認すればOK
-				assert.Equal(t, http.StatusOK, w.Code)
-			},
 		},
 		{
 			name: "SortByDate=ascがクエリに正しく渡される",
