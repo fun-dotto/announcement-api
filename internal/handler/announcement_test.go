@@ -86,7 +86,7 @@ func TestAnnouncementsList(t *testing.T) {
 			},
 		},
 		{
-			name: "FilterIsActiveパラメータがクエリに正しく渡される",
+			name: "FilterIsActive=trueがクエリに正しく渡される",
 			setupMock: func() *repository.MockAnnouncementRepository {
 				return &repository.MockAnnouncementRepository{
 					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
