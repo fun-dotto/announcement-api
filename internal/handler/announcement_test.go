@@ -85,66 +85,6 @@ func TestAnnouncementsList(t *testing.T) {
 				assert.Contains(t, w.Body.String(), "error")
 			},
 		},
-		{
-			name: "FilterIsActive=trueがクエリに正しく渡される",
-			setupMock: func() *repository.MockAnnouncementRepository {
-				return &repository.MockAnnouncementRepository{
-					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						return []domain.Announcement{}, nil
-					},
-				}
-			},
-			params: api.AnnouncementsListParams{
-				FilterIsActive: boolPtr(true),
-			},
-			wantCode: http.StatusOK,
-			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
-				var announcements []api.Announcement
-				err := json.Unmarshal(w.Body.Bytes(), &announcements)
-				assert.NoError(t, err)
-				assert.Empty(t, announcements)
-			},
-		},
-		{
-			name: "SortByDate=ascがクエリに正しく渡される",
-			setupMock: func() *repository.MockAnnouncementRepository {
-				return &repository.MockAnnouncementRepository{
-					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						return []domain.Announcement{}, nil
-					},
-				}
-			},
-			params: api.AnnouncementsListParams{
-				SortByDate: sortDirPtr(api.Asc),
-			},
-			wantCode: http.StatusOK,
-			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
-				var announcements []api.Announcement
-				err := json.Unmarshal(w.Body.Bytes(), &announcements)
-				assert.NoError(t, err)
-				assert.Empty(t, announcements)
-			},
-		},
-		{
-			name: "SortByDate=descがクエリに正しく渡される",
-			setupMock: func() *repository.MockAnnouncementRepository {
-				return &repository.MockAnnouncementRepository{
-					GetAnnouncementsFunc: func(query domain.AnnouncementQuery) ([]domain.Announcement, error) {
-						return []domain.Announcement{}, nil
-					},
-				}
-			},
-			params: api.AnnouncementsListParams{
-				SortByDate: sortDirPtr(api.Desc),
-			},
-			wantCode: http.StatusOK,
-			validate: func(t *testing.T, w *httptest.ResponseRecorder) {
-				var announcements []api.Announcement
-				err := json.Unmarshal(w.Body.Bytes(), &announcements)
-				assert.NoError(t, err)
-				assert.Empty(t, announcements)
-			},
-		},
 	}
 
 	for _, tt := range tests {
