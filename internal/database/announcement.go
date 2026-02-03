@@ -7,13 +7,18 @@ import (
 )
 
 type Announcement struct {
-	ID        string    `gorm:"primaryKey;type:uuid"`
-	Title     string    `gorm:"type:varchar(500);not null"`
-	Date      time.Time `gorm:"not null;index"`
-	URL       string    `gorm:"type:varchar(1000);not null"`
-	IsActive  bool      `gorm:"not null;default:true;index"`
+	ID             string     `gorm:"primaryKey;type:uuid"`
+	Title          string     `gorm:"type:varchar(500);not null"`
+	URL            string     `gorm:"type:varchar(1000);not null"`
+	AvailableFrom  time.Time  `gorm:"index"`
+	AvailableUntil *time.Time `gorm:"index"`
+
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+
+	// v0廃止まで残す
+	IsActive bool      `gorm:"not null;default:true;index"`
+	Date     time.Time `gorm:"not null;index"`
 }
 
 func (Announcement) TableName() string {
