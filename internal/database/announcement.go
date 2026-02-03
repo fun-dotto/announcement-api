@@ -27,20 +27,24 @@ func (Announcement) TableName() string {
 
 func (m *Announcement) ToDomain() domain.Announcement {
 	return domain.Announcement{
-		ID:       m.ID,
-		Title:    m.Title,
-		Date:     m.Date,
-		URL:      m.URL,
-		IsActive: m.IsActive,
+		ID:             m.ID,
+		Title:          m.Title,
+		URL:            m.URL,
+		AvailableFrom:  m.AvailableFrom,
+		AvailableUntil: m.AvailableUntil,
+		Date:           m.Date,
+		IsActive:       m.IsActive,
 	}
 }
 
 func FromDomain(announcement domain.Announcement) Announcement {
 	return Announcement{
-		ID:       announcement.ID,
-		Title:    announcement.Title,
-		Date:     announcement.Date,
-		URL:      announcement.URL,
-		IsActive: announcement.IsActive,
+		ID:             announcement.ID,
+		Title:          announcement.Title,
+		URL:            announcement.URL,
+		AvailableFrom:  announcement.AvailableFrom,
+		AvailableUntil: announcement.AvailableUntil,
+		Date:           announcement.Date,
+		IsActive:       announcement.IsActive,
 	}
 }
