@@ -54,9 +54,7 @@ func toDomainAnnouncementQueryV1(params api.AnnouncementsV1ListParams) domain.An
 	}
 }
 
-func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest) domain.Announcement {
-	now := time.Now()
-
+func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest, now time.Time) domain.Announcement {
 	// v0との後方互換性: IsActiveはAvailableUntilがnilまたは未来の場合にtrue
 	isActive := req.AvailableUntil == nil || req.AvailableUntil.After(now)
 
