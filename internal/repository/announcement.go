@@ -71,7 +71,7 @@ func (r *announcementRepository) CreateAnnouncement(ctx context.Context, announc
 
 func (r *announcementRepository) UpdateAnnouncement(ctx context.Context, announcement domain.Announcement) (domain.Announcement, error) {
 	dbAnnouncement := database.FromDomain(announcement)
-	result := r.db.WithContext(ctx).Model(&dbAnnouncement).Updates(map[string]interface{}{
+	result := r.db.WithContext(ctx).Model(&database.Announcement{}).Where("id = ?", announcement.ID).Updates(map[string]interface{}{
 		"title":           dbAnnouncement.Title,
 		"url":             dbAnnouncement.URL,
 		"available_from":  dbAnnouncement.AvailableFrom,
