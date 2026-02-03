@@ -9,8 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var ErrNotFound = errors.New("announcement not found")
-
 type announcementRepository struct {
 	db *gorm.DB
 }
@@ -56,7 +54,7 @@ func (r *announcementRepository) GetAnnouncementByID(ctx context.Context, id str
 	var dbAnnouncement database.Announcement
 	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&dbAnnouncement).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return domain.Announcement{}, ErrNotFound
+			return domain.Announcement{}, domain.ErrNotFound
 		}
 		return domain.Announcement{}, err
 	}
@@ -85,7 +83,7 @@ func (r *announcementRepository) UpdateAnnouncement(ctx context.Context, announc
 		return domain.Announcement{}, result.Error
 	}
 	if result.RowsAffected == 0 {
-		return domain.Announcement{}, ErrNotFound
+		return domain.Announcement{}, domain.ErrNotFound
 	}
 	return r.GetAnnouncementByID(ctx, announcement.ID)
 }
@@ -96,7 +94,7 @@ func (r *announcementRepository) DeleteAnnouncement(ctx context.Context, id stri
 		return result.Error
 	}
 	if result.RowsAffected == 0 {
-		return ErrNotFound
+		return domain.ErrNotFound
 	}
 	return nil
 }

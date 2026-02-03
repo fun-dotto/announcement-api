@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	api "github.com/fun-dotto/announcement-api/generated"
-	"github.com/fun-dotto/announcement-api/internal/repository"
+	"github.com/fun-dotto/announcement-api/internal/domain"
 )
 
 func (h *Handler) AnnouncementsV1Update(ctx context.Context, request api.AnnouncementsV1UpdateRequestObject) (api.AnnouncementsV1UpdateResponseObject, error) {
@@ -13,7 +13,7 @@ func (h *Handler) AnnouncementsV1Update(ctx context.Context, request api.Announc
 
 	updated, err := h.announcementService.UpdateAnnouncement(ctx, domainAnnouncement)
 	if err != nil {
-		if errors.Is(err, repository.ErrNotFound) {
+		if errors.Is(err, domain.ErrNotFound) {
 			return nil, err // TODO: 404レスポンスを返すべき
 		}
 		return nil, err
