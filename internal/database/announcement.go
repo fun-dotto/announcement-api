@@ -7,13 +7,18 @@ import (
 )
 
 type Announcement struct {
-	ID        string    `gorm:"primaryKey;type:uuid"`
-	Title     string    `gorm:"type:varchar(500);not null"`
-	Date      time.Time `gorm:"not null;index"`
-	URL       string    `gorm:"type:varchar(1000);not null"`
-	IsActive  bool      `gorm:"not null;default:true;index"`
+	ID             string     `gorm:"primaryKey;type:uuid"`
+	Title          string     `gorm:"type:varchar(500);not null"`
+	URL            string     `gorm:"type:varchar(1000);not null"`
+	AvailableFrom  time.Time  `gorm:"not null;index"`
+	AvailableUntil *time.Time `gorm:"index"`
+
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+
+	// v0廃止まで残す
+	IsActive bool      `gorm:"not null;default:true;index"`
+	Date     time.Time `gorm:"not null;index"`
 }
 
 func (Announcement) TableName() string {
@@ -22,20 +27,24 @@ func (Announcement) TableName() string {
 
 func (m *Announcement) ToDomain() domain.Announcement {
 	return domain.Announcement{
-		ID:       m.ID,
-		Title:    m.Title,
-		Date:     m.Date,
-		URL:      m.URL,
-		IsActive: m.IsActive,
+		ID:             m.ID,
+		Title:          m.Title,
+		URL:            m.URL,
+		AvailableFrom:  m.AvailableFrom,
+		AvailableUntil: m.AvailableUntil,
+		Date:           m.Date,
+		IsActive:       m.IsActive,
 	}
 }
 
 func FromDomain(announcement domain.Announcement) Announcement {
 	return Announcement{
-		ID:       announcement.ID,
-		Title:    announcement.Title,
-		Date:     announcement.Date,
-		URL:      announcement.URL,
-		IsActive: announcement.IsActive,
+		ID:             announcement.ID,
+		Title:          announcement.Title,
+		URL:            announcement.URL,
+		AvailableFrom:  announcement.AvailableFrom,
+		AvailableUntil: announcement.AvailableUntil,
+		Date:           announcement.Date,
+		IsActive:       announcement.IsActive,
 	}
 }
