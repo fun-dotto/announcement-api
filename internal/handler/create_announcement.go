@@ -18,7 +18,7 @@ func (h *Handler) AnnouncementsV1Create(ctx context.Context, request api.Announc
 		return nil, err
 	}
 
-	return api.AnnouncementsV1Create200JSONResponse{
+	return api.AnnouncementsV1Create201JSONResponse{
 		Announcement: toApiAnnouncement(created),
 	}, nil
 }

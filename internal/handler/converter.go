@@ -14,30 +14,10 @@ func toApiAnnouncement(announcement domain.Announcement) api.Announcement {
 		AvailableFrom:  announcement.AvailableFrom,
 		AvailableUntil: announcement.AvailableUntil,
 		Url:            announcement.URL,
-		Date:           announcement.Date,
-		IsActive:       announcement.IsActive,
 	}
 }
 
-// v0廃止まで残す
-func toDomainAnnouncementQuery(params api.AnnouncementsV0ListParams) domain.AnnouncementQuery {
-	sortByDate := domain.SortDirectionAsc
-	if params.SortByDate != nil {
-		sortByDate = domain.SortDirection(*params.SortByDate)
-	}
-
-	filterIsActive := false
-	if params.FilterIsActive != nil {
-		filterIsActive = *params.FilterIsActive
-	}
-
-	return domain.AnnouncementQuery{
-		FilterIsActive: filterIsActive,
-		SortByDate:     sortByDate,
-	}
-}
-
-func toDomainAnnouncementQueryV1(params api.AnnouncementsV1ListParams) domain.AnnouncementQuery {
+func toDomainAnnouncementQuery(params api.AnnouncementsV1ListParams) domain.AnnouncementQuery {
 	sortByDate := domain.SortDirectionAsc
 	if params.SortByDate != nil {
 		sortByDate = domain.SortDirection(*params.SortByDate)
