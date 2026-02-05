@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"time"
-
 	api "github.com/fun-dotto/announcement-api/generated"
 	"github.com/fun-dotto/announcement-api/internal/domain"
 )
@@ -34,7 +32,7 @@ func toDomainAnnouncementQuery(params api.AnnouncementsV1ListParams) domain.Anno
 	}
 }
 
-func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest, now time.Time) domain.Announcement {
+func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest) domain.Announcement {
 	return domain.Announcement{
 		ID:             id,
 		Title:          req.Title,

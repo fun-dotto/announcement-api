@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 
@@ -11,7 +10,7 @@ import (
 
 func (h *Handler) AnnouncementsV1Create(ctx context.Context, request api.AnnouncementsV1CreateRequestObject) (api.AnnouncementsV1CreateResponseObject, error) {
 	id := uuid.New().String()
-	domainAnnouncement := toDomainAnnouncementFromRequest(id, *request.Body, time.Now())
+	domainAnnouncement := toDomainAnnouncementFromRequest(id, *request.Body)
 
 	created, err := h.announcementService.CreateAnnouncement(ctx, domainAnnouncement)
 	if err != nil {

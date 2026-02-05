@@ -76,8 +76,6 @@ func (r *announcementRepository) UpdateAnnouncement(ctx context.Context, announc
 		"url":             dbAnnouncement.URL,
 		"available_from":  dbAnnouncement.AvailableFrom,
 		"available_until": dbAnnouncement.AvailableUntil,
-		"date":            dbAnnouncement.Date,
-		"is_active":       dbAnnouncement.IsActive,
 	})
 	if result.Error != nil {
 		return domain.Announcement{}, result.Error
