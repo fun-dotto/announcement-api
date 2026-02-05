@@ -35,16 +35,11 @@ func toDomainAnnouncementQuery(params api.AnnouncementsV1ListParams) domain.Anno
 }
 
 func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest, now time.Time) domain.Announcement {
-	// v0との後方互換性: IsActiveはAvailableUntilがnilまたは未来の場合にtrue
-	isActive := req.AvailableUntil == nil || req.AvailableUntil.After(now)
-
 	return domain.Announcement{
 		ID:             id,
 		Title:          req.Title,
 		URL:            req.Url,
 		AvailableFrom:  req.AvailableFrom,
 		AvailableUntil: req.AvailableUntil,
-		Date:           req.AvailableFrom, // v0との後方互換性
-		IsActive:       isActive,
 	}
 }
