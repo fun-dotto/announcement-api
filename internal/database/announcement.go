@@ -8,21 +8,13 @@ import (
 
 type Announcement struct {
 	ID             string     `gorm:"primaryKey;type:uuid"`
-	Title          string     `gorm:"type:varchar(500);not null"`
-	URL            string     `gorm:"type:varchar(1000);not null"`
+	Title          string     `gorm:"not null"`
+	URL            string     `gorm:"not null"`
 	AvailableFrom  time.Time  `gorm:"not null;index"`
 	AvailableUntil *time.Time `gorm:"index"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-
-	// v0廃止まで残す
-	IsActive bool      `gorm:"not null;default:true;index"`
-	Date     time.Time `gorm:"not null;index"`
-}
-
-func (Announcement) TableName() string {
-	return "announcements"
 }
 
 func (m *Announcement) ToDomain() domain.Announcement {
@@ -32,8 +24,6 @@ func (m *Announcement) ToDomain() domain.Announcement {
 		URL:            m.URL,
 		AvailableFrom:  m.AvailableFrom,
 		AvailableUntil: m.AvailableUntil,
-		Date:           m.Date,
-		IsActive:       m.IsActive,
 	}
 }
 
@@ -44,7 +34,5 @@ func FromDomain(announcement domain.Announcement) Announcement {
 		URL:            announcement.URL,
 		AvailableFrom:  announcement.AvailableFrom,
 		AvailableUntil: announcement.AvailableUntil,
-		Date:           announcement.Date,
-		IsActive:       announcement.IsActive,
 	}
 }
