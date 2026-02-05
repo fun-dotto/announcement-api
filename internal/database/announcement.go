@@ -8,17 +8,13 @@ import (
 
 type Announcement struct {
 	ID             string     `gorm:"primaryKey;type:uuid"`
-	Title          string     `gorm:"type:varchar(500);not null"`
-	URL            string     `gorm:"type:varchar(1000);not null"`
-	AvailableFrom  time.Time  `gorm:"index"`
+	Title          string     `gorm:"not null"`
+	URL            string     `gorm:"not null"`
+	AvailableFrom  time.Time  `gorm:"not null;index"`
 	AvailableUntil *time.Time `gorm:"index"`
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-}
-
-func (Announcement) TableName() string {
-	return "announcements"
 }
 
 func (m *Announcement) ToDomain() domain.Announcement {
