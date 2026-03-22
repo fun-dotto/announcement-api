@@ -1,0 +1,25 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: Environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - stg
+          - qa
+          - prod
+jobs:
+  deploy:
+    uses: fun-dotto/way/.github/workflows/backend-deploy.yml@main
+    secrets: inherit
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      environment_name: ${{ github.event.inputs.environment_name }}
