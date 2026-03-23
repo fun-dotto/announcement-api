@@ -15,6 +15,6 @@ on:
 jobs:
   test:
     uses: fun-dotto/way/.github/workflows/backend-test.yml@main
-    secrets: inherit
     permissions:
       contents: read
+    secrets: inherit
