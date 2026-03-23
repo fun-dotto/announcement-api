@@ -1,5 +1,5 @@
 # Dotto Announcement API
 
-[![CI](https://github.com/fun-dotto/announcement-api/actions/workflows/test.yml/badge.svg)](https://github.com/fun-dotto/announcement-api/actions/workflows/test.yml)
+[![Test](https://github.com/fun-dotto/announcement-api/actions/workflows/test.yml/badge.svg)](https://github.com/fun-dotto/announcement-api/actions/workflows/test.yml)
 
 &copy; 2026 Dotto
