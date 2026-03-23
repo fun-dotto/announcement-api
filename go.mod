@@ -1,6 +1,6 @@
 module github.com/fun-dotto/announcement-api
 
-go 1.25.4
+go 1.25.6
 
 tool github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen
 
