@@ -53,7 +53,7 @@ func (r *announcementRepository) GetAnnouncements(ctx context.Context, query dom
 
 func (r *announcementRepository) GetAnnouncementByID(ctx context.Context, id uuid.UUID) (domain.Announcement, error) {
 	var dbAnnouncement model.Announcement
-	if err := r.db.WithContext(ctx).Where("id = ?", id.String()).First(&dbAnnouncement).Error; err != nil {
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&dbAnnouncement).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Announcement{}, domain.ErrNotFound
 		}
