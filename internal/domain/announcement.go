@@ -1,9 +1,13 @@
 package domain
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Announcement struct {
-	ID             string
+	ID             uuid.UUID
 	Title          string
 	URL            string
 	AvailableFrom  time.Time

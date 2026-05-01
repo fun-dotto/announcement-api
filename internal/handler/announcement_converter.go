@@ -3,11 +3,12 @@ package handler
 import (
 	api "github.com/fun-dotto/announcement-api/generated"
 	"github.com/fun-dotto/announcement-api/internal/domain"
+	"github.com/google/uuid"
 )
 
 func toApiAnnouncement(announcement domain.Announcement) api.Announcement {
 	return api.Announcement{
-		Id:             announcement.ID,
+		Id:             announcement.ID.String(),
 		Title:          announcement.Title,
 		AvailableFrom:  announcement.AvailableFrom,
 		AvailableUntil: announcement.AvailableUntil,
@@ -32,7 +33,7 @@ func toDomainAnnouncementQuery(params api.AnnouncementsV1ListParams) domain.Anno
 	}
 }
 
-func toDomainAnnouncementFromRequest(id string, req api.AnnouncementRequest) domain.Announcement {
+func toDomainAnnouncementFromRequest(id uuid.UUID, req api.AnnouncementRequest) domain.Announcement {
 	return domain.Announcement{
 		ID:             id,
 		Title:          req.Title,

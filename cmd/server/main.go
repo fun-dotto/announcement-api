@@ -5,10 +5,10 @@ import (
 
 	api "github.com/fun-dotto/announcement-api/generated"
 	"github.com/fun-dotto/announcement-api/internal/config"
-	"github.com/fun-dotto/announcement-api/internal/database"
 	"github.com/fun-dotto/announcement-api/internal/handler"
 	"github.com/fun-dotto/announcement-api/internal/repository"
 	"github.com/fun-dotto/announcement-api/internal/service"
+	shareddb "github.com/fun-dotto/shared-go/db"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -22,19 +22,15 @@ func main() {
 
 	cfg := config.Load()
 
-	db, err := database.ConnectWithConnectorIAMAuthN()
+	db, err := shareddb.ConnectWithConnectorIAMAuthN()
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer func() {
-		if err := database.Close(db); err != nil {
+		if err := shareddb.Close(db); err != nil {
 			log.Printf("Failed to close database: %v", err)
 		}
 	}()
-
-	if err := database.AutoMigrate(db); err != nil {
-		log.Fatalf("Failed to migrate database: %v", err)
-	}
 
 	spec, err := openapi3.NewLoader().LoadFromFile("openapi/openapi.yaml")
 	if err != nil {
