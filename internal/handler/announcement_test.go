@@ -12,12 +12,13 @@ import (
 	"github.com/fun-dotto/announcement-api/internal/domain"
 	"github.com/fun-dotto/announcement-api/internal/repository"
 	"github.com/fun-dotto/announcement-api/internal/service"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAnnouncementsV1Detail_NotFound(t *testing.T) {
 	mockRepo := &repository.MockAnnouncementRepository{
-		GetAnnouncementByIDFunc: func(ctx context.Context, id string) (domain.Announcement, error) {
+		GetAnnouncementByIDFunc: func(ctx context.Context, id uuid.UUID) (domain.Announcement, error) {
 			return domain.Announcement{}, domain.ErrNotFound
 		},
 	}
@@ -62,7 +63,7 @@ func TestAnnouncementsV1Update_NotFound(t *testing.T) {
 
 func TestAnnouncementsV1Delete_NotFound(t *testing.T) {
 	mockRepo := &repository.MockAnnouncementRepository{
-		DeleteAnnouncementFunc: func(ctx context.Context, id string) error {
+		DeleteAnnouncementFunc: func(ctx context.Context, id uuid.UUID) error {
 			return domain.ErrNotFound
 		},
 	}
@@ -98,9 +99,9 @@ func TestAnnouncementsV1List(t *testing.T) {
 				return &repository.MockAnnouncementRepository{
 					GetAnnouncementsFunc: func(ctx context.Context, query domain.AnnouncementQuery) ([]domain.Announcement, error) {
 						return []domain.Announcement{
-							{ID: "1", Title: "お知らせ1", AvailableFrom: now, URL: "https://example.com/1"},
-							{ID: "2", Title: "お知らせ2", AvailableFrom: yesterday, URL: "https://example.com/2"},
-							{ID: "3", Title: "お知らせ3", AvailableFrom: twoDaysAgo, URL: "https://example.com/3"},
+							{ID: uuid.New(), Title: "お知らせ1", AvailableFrom: now, URL: "https://example.com/1"},
+							{ID: uuid.New(), Title: "お知らせ2", AvailableFrom: yesterday, URL: "https://example.com/2"},
+							{ID: uuid.New(), Title: "お知らせ3", AvailableFrom: twoDaysAgo, URL: "https://example.com/3"},
 						}, nil
 					},
 				}

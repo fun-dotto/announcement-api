@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) AnnouncementsV1Create(ctx context.Context, request api.AnnouncementsV1CreateRequestObject) (api.AnnouncementsV1CreateResponseObject, error) {
-	id := uuid.New().String()
+	id := uuid.New()
 	domainAnnouncement := toDomainAnnouncementFromRequest(id, *request.Body)
 
 	created, err := h.announcementService.CreateAnnouncement(ctx, domainAnnouncement)
